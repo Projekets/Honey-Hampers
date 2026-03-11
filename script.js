@@ -1,4 +1,4 @@
-const whatsappNumber = "919876543210";
+const whatsappNumber = "918969333717";
 const instagramUrl = "https://www.instagram.com/";
 
 const products = [
