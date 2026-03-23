@@ -3,20 +3,20 @@ const instagramUrl = "https://www.instagram.com/";
 
 const products = [
   {
-    name: "Birthday Celebration Hamper",
-    price: "₹1,499",
+    name: "Mini Gift Hamper",
+    price: "₹299+delivery charges",
     image:
       "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?auto=format&fit=crop&w=900&q=80",
   },
   {
-    name: "Chocolate Delight Hamper",
-    price: "₹1,199",
+    name: "Gift Hamper",
+    price: "₹499+delivery charges",
     image:
-      "https://images.unsplash.com/photo-1511381939415-e44015466834?auto=format&fit=crop&w=900&q=80",
+      "Gift hamper.webp",
   },
   {
-    name: "Festive Family Hamper",
-    price: "₹2,299",
+    name: "Celebration box Hamper",
+    price: "₹699+delivery charges",
     image:
       "https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&w=900&q=80",
   },

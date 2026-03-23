@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invoice – Honey Hamper's Store</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+    rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #fdf6e3;
+      color: #2c1a0e;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    /* ── No-print toolbar ──────────────────────────────────────── */
+    .toolbar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .toolbar button {
+      padding: 0.6rem 1.4rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .toolbar button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-print {
+      background: #d4891a;
+      color: #fff;
+    }
+
+    .btn-reset {
+      background: #fff;
+      color: #2c1a0e;
+      border: 1.5px solid #d4891a;
+    }
+
+    @media print {
+      .toolbar {
+        display: none;
+      }
+
+      body {
+        background: #fff;
+        padding: 0;
+      }
+
+      .invoice {
+        box-shadow: none;
+      }
+    }
+
+    /* ── Invoice Card ─────────────────────────────────────────── */
+    .invoice {
+      background: #fff;
+      width: 100%;
+      max-width: 800px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    /* ── Header ───────────────────────────────────────────────── */
+    .invoice-header {
+      background: linear-gradient(135deg, #d4891a 0%, #f5c842 100%);
+      padding: 2rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .brand h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .brand p {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+    }
+
+    .invoice-meta {
+      text-align: right;
+      color: #fff;
+    }
+
+    .invoice-meta h2 {
+      font-size: 1.4rem;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+
+    .invoice-meta .meta-grid {
+      display: grid;
+      grid-template-columns: auto auto;
+      gap: 0.25rem 1rem;
+      margin-top: 0.5rem;
+      font-size: 0.82rem;
+    }
+
+    .invoice-meta .meta-grid span:nth-child(odd) {
+      opacity: 0.75;
+    }
+
+    .invoice-meta .meta-grid span:nth-child(even) {
+      font-weight: 600;
+    }
+
+    /* ── Editable fields ──────────────────────────────────────── */
+    [contenteditable] {
+      outline: none;
+      border-bottom: 1.5px dashed rgba(0, 0, 0, 0.18);
+      min-width: 100px;
+      display: inline-block;
+      padding: 1px 2px;
+      transition: border-color 0.2s;
+    }
+
+    [contenteditable]:focus {
+      border-bottom-color: #d4891a;
+    }
+
+    .invoice-header [contenteditable] {
+      border-bottom-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .invoice-header [contenteditable]:focus {
+      border-bottom-color: #fff;
+    }
+
+    /* ── Body padding ─────────────────────────────────────────── */
+    .invoice-body {
+      padding: 2rem 2.5rem;
+    }
+
+    /* ── Addresses ────────────────────────────────────────────── */
+    .addresses {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .address-box h3 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #d4891a;
+      margin-bottom: 0.5rem;
+    }
+
+    .address-box p {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: #4a3520;
+    }
+
+    /* ── Items Table ──────────────────────────────────────────── */
+    .items-section h3 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #d4891a;
+      margin-bottom: 0.75rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    thead tr {
+      background: linear-gradient(90deg, #f5c842 0%, #fde480 100%);
+      color: #2c1a0e;
+    }
+
+    thead th {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    thead th:last-child,
+    tbody td:last-child,
+    tfoot td:last-child {
+      text-align: right;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #f0e8d8;
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: #fdf6e3;
+    }
+
+    tbody td {
+      padding: 0.75rem 1rem;
+      color: #3a2510;
+    }
+
+    tbody td [contenteditable] {
+      min-width: 60px;
+    }
+
+    /* Add row button */
+    .add-row-btn {
+      margin-top: 0.75rem;
+      background: none;
+      border: 1.5px dashed #d4891a;
+      color: #d4891a;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .add-row-btn:hover {
+      background: #fdf0d0;
+    }
+
+    /* ── Totals ───────────────────────────────────────────────── */
+    tfoot tr td {
+      padding: 0.5rem 1rem;
+    }
+
+    tfoot .subtotal-label {
+      color: #7a5c3a;
+      font-size: 0.85rem;
+    }
+
+    tfoot .total-row td {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #2c1a0e;
+      border-top: 2px solid #d4891a;
+      padding-top: 0.75rem;
+    }
+
+    /* ── Notes & Bank ─────────────────────────────────────────── */
+    .invoice-footer {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #f0e8d8;
+    }
+
+    .footer-block h4 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #d4891a;
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-block p {
+      font-size: 0.84rem;
+      color: #5a4028;
+      line-height: 1.7;
+    }
+
+    /* ── Thank you strip ─────────────────────────────────────── */
+    .thank-you {
+      text-align: center;
+      padding: 1.25rem;
+      background: linear-gradient(90deg, #fff7e0, #fdf0c0, #fff7e0);
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: #8b5e1a;
+      border-top: 1px solid #f5c842;
+    }
+
+    .thank-you span {
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Toolbar (hidden on print) -->
+  <div class="toolbar">
+    <button class="btn-print" onclick="window.print()">🖨️ Print / Save PDF</button>
+    <button class="btn-reset" onclick="location.reload()">↺ Reset</button>
+  </div>
+
+  <div class="invoice">
+
+    <!-- Header -->
+    <div class="invoice-header">
+      <div class="brand">
+        <h1>🍯 Honey Hamper's Store</h1>
+        <p>Made with ❤ for special moments</p>
+        <p style="margin-top:0.5rem; font-size:0.8rem;">
+          📞 <span contenteditable="true">+91 89693 33717</span><br>
+          📷 <span contenteditable="true">@honeyhampers</span><br>
+          📍 <span contenteditable="true">City, State, India</span>
+        </p>
+      </div>
+      <div class="invoice-meta">
+        <h2>INVOICE</h2>
+        <div class="meta-grid">
+          <span>Invoice No.</span> <span contenteditable="true">#HH-001</span>
+          <span>Date</span> <span contenteditable="true" id="inv-date"></span>
+          <span>Due Date</span> <span contenteditable="true" id="due-date"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="invoice-body">
+
+      <!-- Addresses -->
+      <div class="addresses">
+        <div class="address-box">
+          <h3>Bill To</h3>
+          <p>
+            <strong contenteditable="true">Customer Name</strong><br>
+            <span contenteditable="true">Address Line 1</span><br>
+            <span contenteditable="true">City, State – PIN</span><br>
+            📞 <span contenteditable="true">+91 XXXXX XXXXX</span>
+          </p>
+        </div>
+        <div class="address-box">
+          <h3>Delivery To</h3>
+          <p>
+            <span contenteditable="true">Same as billing address</span><br><br>
+            <strong>Delivery Date:</strong>
+            <span contenteditable="true">DD / MM / YYYY</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Items Table -->
+      <div class="items-section">
+        <h3>Order Items</h3>
+        <table id="items-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Hamper / Item</th>
+              <th>Qty</th>
+              <th>Unit Price (₹)</th>
+              <th>Amount (₹)</th>
+            </tr>
+          </thead>
+          <tbody id="items-body">
+            <tr>
+              <td>1</td>
+              <td contenteditable="true">Birthday Celebration Hamper</td>
+              <td contenteditable="true" class="qty">1</td>
+              <td contenteditable="true" class="price">1,499</td>
+              <td class="amount">₹1,499</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td contenteditable="true">Custom Add-on / Message Card</td>
+              <td contenteditable="true" class="qty">1</td>
+              <td contenteditable="true" class="price">0</td>
+              <td class="amount">₹0</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="subtotal-label">
+              <td colspan="4" style="text-align:right;">Subtotal</td>
+              <td id="subtotal">₹1,499</td>
+            </tr>
+            <tr class="subtotal-label">
+              <td colspan="4" style="text-align:right;">Delivery Charges</td>
+              <td contenteditable="true" id="delivery">₹0</td>
+            </tr>
+            <tr class="subtotal-label">
+              <td colspan="4" style="text-align:right;">Discount</td>
+              <td>– ₹<span contenteditable="true" id="discount">0</span></td>
+            </tr>
+            <tr class="total-row">
+              <td colspan="4" style="text-align:right;">Total</td>
+              <td id="grand-total">₹1,499</td>
+            </tr>
+          </tfoot>
+        </table>
+        <button class="add-row-btn" onclick="addRow()">+ Add Item</button>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="invoice-footer">
+        <div class="footer-block">
+          <h4>Payment Details</h4>
+          <p>
+            UPI ID: <strong contenteditable="true">honeyhampers@upi</strong><br>
+            Bank: <span contenteditable="true">Bank Name</span><br>
+            A/C No: <span contenteditable="true">XXXXXXXXXXXX</span><br>
+            IFSC: <span contenteditable="true">IFSCXXXXXX</span>
+          </p>
+        </div>
+        <div class="footer-block">
+          <h4>Notes</h4>
+          <p contenteditable="true">
+            Thank you for your order! 🍯<br>
+            All hampers are freshly packed.<br>
+            For queries, WhatsApp us anytime.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="thank-you"><span>🍯</span> Thank you for choosing Honey Hamper's Store! <span>🍯</span></div>
+  </div>
+
+  <script>
+    // ── Auto-fill today's date ───────────────────────────────────
+    const today = new Date();
+    const fmt = d => d.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const dueDay = new Date(today); dueDay.setDate(dueDay.getDate() + 7);
+    document.getElementById('inv-date').textContent = fmt(today);
+    document.getElementById('due-date').textContent = fmt(dueDay);
+
+    // ── Add Item Row ─────────────────────────────────────────────
+    let rowCount = 2;
+    function addRow() {
+      rowCount++;
+      const tbody = document.getElementById('items-body');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${rowCount}</td>
+        <td contenteditable="true">Item Description</td>
+        <td contenteditable="true" class="qty">1</td>
+        <td contenteditable="true" class="price">0</td>
+        <td class="amount">₹0</td>
+      `;
+      tbody.appendChild(tr);
+      attachListeners(tr);
+    }
+
+    // ── Auto-calculate totals ────────────────────────────────────
+    function parseNum(str) {
+      return parseFloat(str.replace(/[^0-9.]/g, '')) || 0;
+    }
+
+    function recalc() {
+      let sub = 0;
+      document.querySelectorAll('#items-body tr').forEach(row => {
+        const qty = parseNum(row.querySelector('.qty')?.textContent || '0');
+        const price = parseNum(row.querySelector('.price')?.textContent || '0');
+        const amt = qty * price;
+        sub += amt;
+        const amtCell = row.querySelector('.amount');
+        if (amtCell) amtCell.textContent = '₹' + amt.toLocaleString('en-IN');
+      });
+
+      document.getElementById('subtotal').textContent = '₹' + sub.toLocaleString('en-IN');
+
+      const delivery = parseNum(document.getElementById('delivery').textContent);
+      const discount = parseNum(document.getElementById('discount').textContent);
+      const grand = sub + delivery - discount;
+      document.getElementById('grand-total').textContent = '₹' + grand.toLocaleString('en-IN');
+    }
+
+    function attachListeners(row) {
+      row.querySelectorAll('.qty, .price').forEach(el => {
+        el.addEventListener('input', recalc);
+      });
+    }
+
+    // Attach to existing rows
+    document.querySelectorAll('#items-body tr').forEach(attachListeners);
+    document.getElementById('delivery').addEventListener('input', recalc);
+    document.getElementById('discount').addEventListener('input', recalc);
+  </script>
+</body>
+
+</html>

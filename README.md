@@ -68,7 +68,7 @@ const products = [
 Edit the top two lines of `script.js`:
 
 ```js
-const whatsappNumber = "919876543210"; // Country code + number, no + or spaces
+const whatsappNumber = "91xxxxxxxxxx"; // Country code + number, no + or spaces
 const instagramUrl   = "https://www.instagram.com/yourusername/";
 ```
 
