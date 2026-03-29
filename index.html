@@ -5,22 +5,72 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Honey Hamper's Store</title>
+  <meta name="description"
+    content="Honey Hamper's Store – order beautiful gift hampers instantly on WhatsApp or Instagram." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <header class="hero">
-    <h1>Honey Hamper's Store</h1>
-    <p>Choose a hamper and order instantly on WhatsApp or Instagram.</p>
-  </header>
 
-  <main>
-    <section>
+  <!-- ── Navbar ── -->
+  <nav class="navbar">
+    <span class="nav-logo">🍯 Honey Hampers</span>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#products">Our Products</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── HOME SECTION ── -->
+  <section id="home" class="home-section">
+    <!-- Hero text -->
+    <div class="hero-text">
+      <h1>Thoughtful Gifts,<br>Beautifully Packaged 🎁</h1>
+      <p>Handcrafted hampers for every occasion.<br>Order instantly on WhatsApp or Instagram.</p>
+      <a href="#products" class="cta-btn">Shop Now ↓</a>
+    </div>
+
+    <!-- Slider -->
+    <div class="slider-wrapper">
+      <div class="slider" id="slider">
+        <div class="slide">
+          <img src="Gift hamper.webp" alt="Gift Hamper" />
+          <div class="slide-caption">Gift Hamper – ₹499</div>
+        </div>
+        <div class="slide">
+          <img src="proposel box.jpg" alt="Proposal Box Hamper" />
+          <div class="slide-caption">Proposal Box Hamper – ₹1399</div>
+        </div>
+        <div class="slide">
+          <img src="https://images.unsplash.com/photo-1513885535751-8b9238bd345a?auto=format&fit=crop&w=1200&q=80"
+            alt="Mini Gift Hamper" />
+          <div class="slide-caption">Mini Gift Hamper – ₹299</div>
+        </div>
+        <div class="slide">
+          <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=1200&q=80"
+            alt="Birthday Hamper" />
+          <div class="slide-caption">Birthday Gift Hamper – ₹999</div>
+        </div>
+      </div>
+      <button class="slider-btn prev" id="sliderPrev" aria-label="Previous slide">&#8249;</button>
+      <button class="slider-btn next" id="sliderNext" aria-label="Next slide">&#8250;</button>
+      <div class="slider-dots" id="sliderDots"></div>
+    </div>
+  </section>
+
+  <!-- ── PRODUCTS SECTION ── -->
+  <section id="products" class="products-section">
+    <div class="section-header">
       <h2>Our Hampers</h2>
-      <div id="product-list" class="product-grid" aria-live="polite"></div>
-    </section>
-  </main>
+      <p class="section-sub">Choose a hamper and order instantly</p>
+    </div>
+    <div id="product-list" class="product-grid" aria-live="polite"></div>
+  </section>
 
+  <!-- ── Footer ── -->
   <footer>
     <p>Made with ❤ for special moments.</p>
   </footer>

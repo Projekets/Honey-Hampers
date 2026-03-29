@@ -30,7 +30,7 @@ const products = [
     name: "Proposal box Hamper",
     price: "₹1399(deliveryincluded)",
     image:
-      "proposel box.jpg",
+      "https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&w=900&q=80",
   },
 ];
 
@@ -56,3 +56,48 @@ products.forEach((product) => {
 
   productList.appendChild(card);
 });
+
+/* ── Home Slider Logic ── */
+(function () {
+  const slider = document.getElementById("slider");
+  if (!slider) return;
+  const dotsContainer = document.getElementById("sliderDots");
+  const slides = slider.querySelectorAll(".slide");
+  let current = 0;
+  let timer;
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement("button");
+    dot.className = "slider-dot" + (i === 0 ? " active" : "");
+    dot.setAttribute("aria-label", "Go to slide " + (i + 1));
+    dot.addEventListener("click", () => { goTo(i); resetTimer(); });
+    dotsContainer.appendChild(dot);
+  });
+
+  function updateDots() {
+    dotsContainer.querySelectorAll(".slider-dot").forEach((d, i) =>
+      d.classList.toggle("active", i === current)
+    );
+  }
+
+  function goTo(index) {
+    current = (index + slides.length) % slides.length;
+    slider.style.transform = `translateX(-${current * 100}%)`;
+    updateDots();
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  document.getElementById("sliderNext").addEventListener("click", () => { next(); resetTimer(); });
+  document.getElementById("sliderPrev").addEventListener("click", () => { prev(); resetTimer(); });
+
+  function startTimer() { timer = setInterval(next, 3500); }
+  function resetTimer() { clearInterval(timer); startTimer(); }
+
+  const wrapper = slider.closest(".slider-wrapper");
+  wrapper.addEventListener("mouseenter", () => clearInterval(timer));
+  wrapper.addEventListener("mouseleave", startTimer);
+
+  startTimer();
+})();
