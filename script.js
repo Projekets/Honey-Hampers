@@ -21,10 +21,16 @@ const products = [
       "https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&w=900&q=80",
   },
   {
-    name: "Premium Luxury Hamper",
-    price: "₹3,499",
+    name: "Birthday Gift hamper",
+    price: "₹999+delivery charges",
     image:
       "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=900&q=80",
+  },
+  {
+    name: "Proposal box Hamper",
+    price: "₹1399(deliveryincluded)",
+    image:
+      "proposel box.jpg",
   },
 ];
 
